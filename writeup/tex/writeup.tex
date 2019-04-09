@@ -1,0 +1,152 @@
+\section{Introduction}
+
+Recently I watched the video \url{https://www.youtube.com/watch?v=q6L06pyt9CA},
+featuring Matt Parker.  Being a huge fan of Matt and of Numperphile, and being
+rather full of myself, my first response was naturally one of doubt (also
+because of the spirit of mathematical enquiry and all that). I decided to have
+my own crack at the problem.
+
+I reasoned that checking if a number is polygonal should be a roughly
+\(\BigO(1)\) operation as we can find the \(n\)th term of the base-\(s\)
+polygonal numbers \(P(s, n)\), which will be quadratic in \(n\), and solve it
+for \(n\) with the quadratic formula, so to check if some cannonball numbers
+\(C(s, n_c)\) is polygonal we just see if the corresponding \(n_p\) is an
+integer. Now \(10^9\) is a fairly small number. Seeing as my CPU's clockspeed is
+in the range of gigahertz, and we're just checking a tiny fraction of those
+numbers as we're just computing the cannonball numbers under this limit, it
+seems reasonable that this should be doable fairly fast.
+
+I've thought about the problem of higher-dimensional stacks of cannonballs (ie
+the ones formed by adding up the cannonball numbers), but I've not done anything
+about it.
+
+\section{The Maths}
+
+Indeed, this approach does seem to work. Almost by definition we have the
+recurrence in polygonal numbers
+\begin{equation*}
+P(s, n) = P(s, n - 1) + n(s - 2) - (s - 3)
+\end{equation*}
+so we can use
+\begin{align*}
+P(s, n) &= \sum_{r = 1}^n P(s, r) - P(s, r - 1) \\
+    &= \sum_{r = 1}^n (n(s - 2) - (s - 3)) \\
+    &= \frac 12 n(n + 1)(s - 2) - n(s - 3) \\
+    &= \frac{n^2(s - 2) - n(s - 4)} 2
+\end{align*}
+Fortunately this seems to agree with what Wikipedia thinks. Now, we have
+\begin{alignat*}{2}
+&& 0 &= (s - 2)n^2 - (s - 4)n - 2P(s, n) \\
+&\implies& n &= \frac{s - 4 + \sqrt{(s - 4)^2 + 8(s - 2)P(s, n)}}{2s - 4}
+\end{alignat*}
+Wikipedia still seems to think we're on track.
+
+Another result that I don't really use is that
+\begin{align*}
+C(s, n) &= \sum_{r = 1}^n P(s, n) \\
+    &= \frac 12 \sum_{r = 1}^n (n^2(s - 2) - n(s - 4)) \\
+    &= \frac 12 \pqty{\frac{n(n + 1)(2n + 1)(s - 2)} 6
+                    - \frac{n(n + 1)(s - 4)} 2} \\
+    &= \frac 1{12}n(n + 1)\bqty{(2n + 1)(s - 2) - 3(s - 4)}
+\end{align*}
+In fact I've only used this in verification of the results.
+
+Regardless, now we need only work our way up the \(C(s, n)\)s using the
+recurrence \(C(s, n) = P(s, n) + C(s, n - 1)\), and check for each if the
+quadratic formula gives an integer result. This is most easily done by checking
+if the discriminant is a perfect square and then checking that the denominator
+divides the numerator.
+
+\section{The Programming}
+
+For speeeeeeed I implemented this in C (although there is a long abandoned
+parallel Python implementation). I used 128-bit integers to be on the safe side,
+as \(10^{19}\) is a little small for my liking. This meant I had to do a lot of
+messing around to get things to actually display in base 10. This program is
+shown in Listing \ref{lst_c}.
+
+I did briefly consider either implementing or importing some kind of arbitrary
+precision integer arithmetic functionality, but then I decided I wasn't going to
+run it on anything fast enough to have to worry about that, and I have better
+things to do.
+
+There's also a slick little progress update that gets printed to STDERR, and a
+number of zsh scripts to save me typing.
+
+I also have a program that verifies results, removes duplicates and formats them
+into a \LaTeX{} table (spoilers for table \ref{tab_ugly}), shown in listing
+\ref{lst_py_verif}.
+
+\begin{longlisting}
+\inputminted{c}{../src/c/cannonball.c}
+\caption{The main C source code}
+\label{lst_c}
+\end{longlisting}
+
+\begin{longlisting}
+\inputminted{python}{../src/factcheck.py}
+\caption{Python verification program}
+\label{lst_py_verif}
+\end{longlisting}
+
+\section{The Ugly}
+
+Table \ref{tab_ugly} lists all the solutions that I've found, so far. The
+\TeX{} source of the table is in \texttt{../src/tab.tex}, which is derived from
+\texttt{../src/c/solutions/*}. It has been ordered so that all the solutions
+along the trendy line are grouped together at the end, so they can be viewed
+separately from the more flavourful, stylish and individualistic solutions.
+
+I have also plotted both the data in its entirety on a double logarithmic scale
+\ref{fig_lin}, and an excerpt from the data on a linear scale (\ref{fig_log}).
+
+The obvious pattern that jumps out is the big line of points for all the sides
+congrent to \(2 \pmod 3\). Particularly because it looks like such a straight
+line on the log-log plot, we would expect it to be modelled well as a constant
+multiple of some power of \(s\). I drew two lines that seemed to roughly bound
+it, and used those to extract the points on the line and then do some linear
+regression on that (figure \ref{fig_log_interesting}). I obtained the formula
+\input{../graph/model}
+which seems to be accurate to within probably about \(1\%\), I've not really
+checked properly.
+
+The R code I used to achieve all this is in Listing \ref{lst_R}.
+
+\begin{longlisting}
+\inputminted{R}{../graph/graph.R}
+\caption{R graphical analysis}
+\label{lst_R}
+\end{longlisting}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth,page=1]{../graph/Rplots.pdf}
+\caption{Log plot}
+\label{fig_log}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth,page=2]{../graph/Rplots.pdf}
+\caption{Linear plot}
+\label{fig_lin}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth,page=3]{../graph/Rplots.pdf}
+\caption{Log plot of the interesting bit}
+\label{fig_log_interesting}
+\end{figure}
+
+\begin{longtable}{*4r}
+\toprule
+\boldmath \(s\) & \boldmath \(C(s, n_c) = P(s, n_p)\)
+& \boldmath \(n_p\) & \boldmath \(n_c\) \\
+\midrule
+\endhead
+\input{../src/tab}
+\bottomrule
+\caption{Polygonal Cannonball Numbers}
+\label{tab_ugly}
+\end{longtable}

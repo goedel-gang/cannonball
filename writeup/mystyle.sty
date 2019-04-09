@@ -1,0 +1,189 @@
+\ProvidesPackage{mystyle}
+
+% so the title can be accessed by fancyhdr (and is automatically correctly
+% spelled etc)
+\makeatletter
+\let\thetitle\@title
+\let\theauthor\@author
+\makeatother
+
+% more advanced handling of utf8 and fonts or something. apparently good to have
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% make the document take up more of the page
+\usepackage[margin=1in,headheight=13.6pt]{geometry}
+
+% custom document header/footer
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\thetitle}
+\rhead{\theauthor}
+\rfoot{Page \thepage\ of \pageref{LastPage}}
+
+% better fonts, apparently
+\usepackage{lmodern}
+% fixes some small caps things
+\usepackage{slantsc}
+
+% \url function and clickable table of contents. no ugly red boxes though
+\usepackage[hidelinks,pdfencoding=auto,psdextra,
+            pdfauthor={\theauthor},
+            pdftitle={\thetitle},
+            pdfsubject={\thetitle},
+            pdfproducer={LaTeX with hyperref},
+            pdfcreator={pdflatex}]{hyperref}
+
+% maths symbols and other stuff (supersedes the ams* packages)
+\usepackage{mathtools}
+
+% theorem and proof environments. thmtools creates the List of Theorems.
+% Singular nitpick is that you have to cludge qedheres for proofs that end in an
+% alignat.
+\usepackage{amsthm}
+\usepackage{thmtools}
+% Start theorems on a new line
+\newtheoremstyle{break}
+  {\topsep}{\topsep}%
+  {\itshape}{}%
+  {\bfseries}{}%
+  {\newline}{}%
+\theoremstyle{break}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+% provides typesetting of derivatives with \dv and \dd
+% also provides all the qty commands and some auto-scaling for operators like
+% \sin, \cos
+\usepackage{physics}
+
+% provides uptau
+\usepackage{upgreek}
+% provides \varnothing
+\usepackage{amssymb}
+% why not
+\newcommand\omicron{o}
+% mathscr
+\usepackage{mathrsfs}
+% text(frak|swab|goth)
+\usepackage{yfonts}
+\def\initdefault{yinit} % fix weird font thing
+
+% extra maths operators
+\DeclareMathOperator{\Normal}{\mathcal{N}}
+\DeclareMathOperator{\Binomial}{\mathcal{B}}
+\DeclareMathOperator{\Prob}{\mathrm P}
+\DeclareMathOperator{\BigO}{\mathcal O}
+\DeclareMathOperator{\arccosh}{arccosh}
+\DeclareMathOperator{\arcsinh}{arcsinh}
+\DeclareMathOperator{\arctanh}{arctanh}
+\DeclareMathOperator{\arcsech}{arcsech}
+\DeclareMathOperator{\arccsch}{arccsch}
+\DeclareMathOperator{\arccoth}{arccoth}
+% these are mostly commands from commath, but i'd rather define them myself
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\intcc}{[}{]}
+\DeclarePairedDelimiter{\intco}{[}{)}
+\DeclarePairedDelimiter{\intoc}{(}{]}
+\DeclarePairedDelimiter{\intoo}{(}{)}
+\DeclarePairedDelimiter{\set}{\{}{\}}
+
+% General commands for typsetting different types of mathematical object
+% modularity and all that
+\newcommand{\defeq}{\vcentcolon=}
+\newcommand*\mean[1]{\overline{#1}}
+\newcommand*\lseg[1]{\mathit{#1}}
+\newcommand*\fld[1]{\mathit{#1}}
+\newcommand*\mat[1]{\mathbf{#1}}
+\renewcommand*\vec[1]{\mathrm{\mathbf{#1}}}
+\newcommand*\veca[1]{\overrightarrow{\mathrm{\mathbf{#1}}}}
+\newcommand*\uvec[1]{\hat{\vec{#1}}}
+\newcommand*\uveci{\uvec{\vec{\textbf{\i}}}}
+\newcommand*\uvecj{\uvec{\vec{\textbf{\j}}}}
+\newcommand*\uveck{\uvec{\vec{k}}}
+% combinatorial operators in nXr form
+\newcommand*\nPr[2]{\prescript{#1\mkern-2.5mu}{}P_{#2}}
+\newcommand*\nCr[2]{\prescript{#1\mkern-0.5mu}{}C_{#2}}
+% drop-in commands for some sets
+% modularity and all that
+\newcommand*\setstyle{\mathbb}
+\newcommand*\Naturals{\setstyle N}
+\newcommand*\Integers{\setstyle Z}
+\newcommand*\Rationals{\setstyle Q}
+\newcommand*\Reals{\setstyle R}
+\newcommand*\Complex{\setstyle C}
+% to mark things of interest?
+\newcommand*\note{(\star)}
+
+% define starting paragraph letter stuff
+\usepackage{lettrine}
+\setcounter{DefaultLines}{4}
+\setlength{\DefaultFindent}{0.5em}
+\setlength{\DefaultNindent}{0em}
+\renewcommand{\LettrineFontHook}{\usefont{U}{yinit}{m}{n}}
+
+% typesetting units
+\usepackage[separate-uncertainty]{siunitx}
+
+% for references
+\usepackage[square,numbers]{natbib}
+
+% package for drawing tex-related logos - eg \hologo(bibtex)
+\usepackage{hologo}
+
+% needed for colouring and stuff (xcolor supersedes color). provides LightSalmon
+\usepackage[x11names]{xcolor}
+
+% no paragraph indent
+\usepackage[parfill]{parskip}
+
+% pretty table rules and multirow entries. Also page-breaking tables
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+
+% plotting mathematical functions (needs version request)
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.15}
+
+% for better table of contents stuff, providing the \listof* commands and not
+% listing the tables in the table of contents
+\usepackage[nottoc,notlof,notlot]{tocbibind}
+
+% increase spacing of section numbers from headings
+\usepackage{tocloft}
+\setlength{\cftsubsecnumwidth}{2.9em}
+\setlength{\cftsubsubsecindent}{4.4em}
+
+% bibliography management with square braces for citations
+\usepackage[square,numbers]{natbib}
+
+% graphics, like eps files and stuff (supersedes graphics)
+\usepackage{graphicx}
+
+% lorem ipsum generator
+\usepackage{lipsum}
+
+% listings of code
+\usepackage{minted}
+\setminted{breaklines,
+           breakbytokenanywhere,
+           linenos
+}
+\usemintedstyle{friendly}
+% bigger line numbers
+\renewcommand\theFancyVerbLine{\footnotesize\arabic{FancyVerbLine}}
+
+% that can break across pages while being captioned figures
+\usepackage{caption}
+\newenvironment{longlisting}
+{\addvspace{\baselineskip}\captionsetup{type=listing}}
+{\addvspace{\baselineskip}}
+
+% allow maths to break across pages
+\allowdisplaybreaks

@@ -14,7 +14,7 @@
 #define MAX_CHECK_DEFAULT ipow(10, 11)
 #define MAX_BASE_DEFAULT 31265
 // How many numbers to check before giving an update
-#define INNER_UPDATE ipow(10, 6) * 5
+#define UPDATE_CYCLES ipow(10, 6) * 5
 
 // integer type being used to represent cannonball numbers
 typedef __int128_t cannonball_int;
@@ -86,10 +86,12 @@ void check_base(cannonball_int base, cannonball_int max_check,
     for (  i = 2, cannonballs = 1 + POLYGONAL(base, 2);
            cannonballs <= max_check;
            i++, cannonballs += POLYGONAL(base, i)) {
-        if ((i - 2) % INNER_UPDATE == 0) {
+        if (i % UPDATE_CYCLES == 0 || (i == 2 && base % UPDATE_CYCLES == 0)) {
             fmt_c(base, c_1);
             fprintf(stderr, "\r%3.0f%% %3.0f%% %s",
                     100.0 * base / max_base,
+                    // As cannonballs grows roughly cubically, take a cube root
+                    // to linearise the progress
                     100.0 * pow(1.0 * cannonballs / max_check, 1.0 / 3),
                     c_1);
             fflush(stderr);
@@ -132,7 +134,7 @@ int main(int argc, char **argv) {
            c_1, c_2);
     printf("Using integers of width %zu bytes, which go up to about %.5e\n",
            sizeof(cannonball_int), exp(log(0xff) * sizeof(cannonball_int)));
-    for (base = 3; base <= max_base; base++) {
+    for (base = 3; base <= max_base && base <= max_check; base++) {
         check_base(base, max_check, max_base);
     }
     free(c_1); free(c_2);

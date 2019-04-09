@@ -1,0 +1,8 @@
+Finding polygonal cannonball numbers <= 100000000000000000000, with base <= 100000000000000000000
+Using integers of width 16 bytes, which go up to about 3.19627e+38
+>10 == P(3, 4) == C(3, 3)
+>120 == P(3, 15) == C(3, 8)
+>1540 == P(3, 55) == C(3, 20)
+>7140 == P(3, 119) == C(3, 34)
+>4900 == P(4, 70) == C(4, 24)
+>946 == P(6, 22) == C(6, 11)

@@ -44,4 +44,4 @@ ggplot(trend_df, aes(s, C)) +
           panel.background = element_blank()) +
     scale_x_log10() +
     scale_y_log10() +
-    geom_smooth(method = "lm", linetype="dashed")
+    geom_smooth(method = "lm", linetype="dashed", color="red")

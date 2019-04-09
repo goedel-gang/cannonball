@@ -93,20 +93,36 @@ I have also plotted both the data in its entirety on a double logarithmic scale
 \ref{fig_lin}, and an excerpt from the data on a linear scale (\ref{fig_log}).
 
 The obvious pattern that jumps out is the big line of points for all the sides
-congrent to \(2 \pmod 3\).
+congrent to \(2 \pmod 3\). Particularly because it looks like such a straight
+line on the log-log plot, we would expect it to be modelled well as a constant
+multiple of some power of \(s\). I drew two lines that seemed to roughly bound
+it, and used those to extract the points on the line and then do some linear
+regression on that (figure \ref{fig_log_interesting}. I obtained the formula
+\begin{equation*}
+C = 0.003828399 \cdot s ^ { 7.068495 }
+\end{equation*}
+which seems to be accurate to within probably about \(1\%\), I've not really
+checked properly.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth,page=1]{../graph/Rplots.pdf}
+\includegraphics[width=\textwidth,page=1]{../graph/Rplots.pdf}
 \caption{Log plot}
 \label{fig_log}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth,page=2]{../graph/Rplots.pdf}
+\includegraphics[width=\textwidth,page=2]{../graph/Rplots.pdf}
 \caption{Linear plot}
 \label{fig_lin}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth,page=3]{../graph/Rplots.pdf}
+\caption{Log plot of the interesting bit}
+\label{fig_log_interesting}
 \end{figure}
 
 \begin{longtable}{*4r}

@@ -10,7 +10,7 @@ trend_df <- subset(soln_df, log10(C) > -3 + 7 * log10(s) &
 model <- lm(log(C) ~ log(s), data=trend_df)
 intercept <- coef(summary(model))["(Intercept)", "Estimate"]
 grad <- coef(summary(model))["log(s)", "Estimate"]
-print(paste("C =", exp(intercept), "* s ^ ", grad))
+cat("C =", exp(intercept), "\\cdot s ^ {", grad, "}\n")
 
 ggplot(soln_df, aes(s, C)) +
     geom_point() +

@@ -12,8 +12,12 @@ colnames(all_df) <- c("s", "C", "n_P", "n_C")
 model <- lm(log(C) ~ log(s), data=boring_df)
 intercept <- coef(summary(model))["(Intercept)", "Estimate"]
 grad <- coef(summary(model))["log(s)", "Estimate"]
+boring_df$fit <- exp(intercept) * boring_df$s ^ grad
+boring_df$err <- abs((boring_df$fit / boring_df$C) - 1)
 cat("\\begin{equation*}\n")
 cat("C =", exp(intercept), "\\cdot s ^ {", grad, "}\n")
+cat("\\qquad \\text{Average percentage error of ",
+    100 * mean(boring_df$err), "\\%}")
 cat("\\end{equation*}\n")
 
 ggplot(all_df, aes(s, C)) +

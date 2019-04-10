@@ -87,6 +87,17 @@ I also have a program that verifies results, removes duplicates and formats them
 into a \LaTeX{} table (spoilers for table \ref{tab_ugly}), shown in listing
 \ref{lst_py_verif}.
 
+After having used these programs to obtain some data, and plot it and so on and
+so forth as discussed in the next section, I noticed the glaring pattern with
+the cannonball numbers derived from a side congruent to 2 modulo 3. By
+assuming that this pattern continues, in that you can move 3 along and a little
+up to get to a new cannonball polygonal number, it is easy to generate these
+kinds of numbers at a preposterous rate. I wrote a little C program (listing
+\ref{lst_c_2mod3} which took maybe ten minutes to hit the upper bounds of
+128-bit integer arithmetic, so I for now I've written a Python program to bear
+the torch, and painstakingly squeeze out every last member of the congruence
+class at my leisure.
+
 \begin{longlisting}
 \inputminted{c}{../src/c/cannonball.c}
 \caption{The main C source code}
@@ -99,28 +110,43 @@ into a \LaTeX{} table (spoilers for table \ref{tab_ugly}), shown in listing
 \label{lst_py_verif}
 \end{longlisting}
 
+\begin{longlisting}
+\inputminted{c}{../src/c/2mod3/2mod3.c}
+\caption{C program to find cannonball polygons for side congruent to 2 mod 3}
+\label{lst_c_2mod3}
+\end{longlisting}
+
 \section{The Ugly}
 
-Table \ref{tab_ugly} lists all the solutions that I've found, so far. The
-\TeX{} source of the table is in \texttt{../src/tab.tex}, which is derived from
-\texttt{../src/c/solutions/*}. It has been ordered so that all the solutions
-along the trendy line are grouped together at the end, so they can be viewed
-separately from the more flavourful, stylish and individualistic solutions.
-
-I have also plotted both the data in its entirety on a double logarithmic scale
-\ref{fig_lin}, and an excerpt from the data on a linear scale (\ref{fig_log}).
+I have plotted both the data in its entirety on a double logarithmic scale
+\ref{fig_log_all}.
 
 The obvious pattern that jumps out is the big line of points for all the sides
-congrent to \(2 \pmod 3\). Particularly because it looks like such a straight
+congruent to \(2 \pmod 3\). Particularly because it looks like such a straight
 line on the log-log plot, we would expect it to be modelled well as a constant
 multiple of some power of \(s\). I drew two lines that seemed to roughly bound
 it, and used those to extract the points on the line and then do some linear
-regression on that (figure \ref{fig_log_interesting}). I obtained the formula
+regression on that (figure \ref{fig_log_boring}). I obtained the formula
 \input{../graph/model}
-which seems to be accurate to within probably about \(1\%\), I've not really
-checked properly.
+I have also plotted these points on a linear scale, demonstrating their
+relationship \ref{fig_linear_boring}.
+
+Lastly, I plotted all points other than the points along this line in figure
+\ref{fig_log_interesting}.
 
 The R code I used to achieve all this is in Listing \ref{lst_R}.
+
+Table \ref{tab_ugly} lists some solutions that I've found, so far. The \TeX{}
+source of the table is in \texttt{../src/interesting.tex}, which is derived from
+\texttt{../src/c/solutions/*}.  I have deliberately omitted the ``boring''
+solutions along the dense line, favouring the more flavourful, stylish and
+individualistic solutions. This is pertinent as there are so many of these that
+the table would literally be three order of magnitude larger if I hadn't.
+
+There are also two tables \texttt{boring.tex} and \texttt{all.tex} containing
+only the boring solutions and all solutions, respectively, but there are such a
+truly mind-boggling number of boring solutions that really it's hardly any fun
+looking at them.
 
 \begin{longlisting}
 \inputminted{R}{../graph/graph.R}
@@ -132,20 +158,27 @@ The R code I used to achieve all this is in Listing \ref{lst_R}.
 \centering
 \includegraphics[width=\textwidth,page=1]{../graph/Rplots.pdf}
 \caption{Log plot}
-\label{fig_log}
+\label{fig_log_all}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth,page=2]{../graph/Rplots.pdf}
-\caption{Linear plot}
-\label{fig_lin}
+\caption{Linear plot of boring points}
+\label{fig_linear_boring}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth,page=3]{../graph/Rplots.pdf}
-\caption{Log plot of the interesting bit}
+\caption{Log plot of the boring points}
+\label{fig_log_boring}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth,page=4]{../graph/Rplots.pdf}
+\caption{Log plot of the remaining points}
 \label{fig_log_interesting}
 \end{figure}
 
@@ -155,7 +188,7 @@ The R code I used to achieve all this is in Listing \ref{lst_R}.
 & \boldmath \(n_p\) & \boldmath \(n_c\) \\
 \midrule
 \endhead
-\input{../src/tab}
+\input{../src/interesting}
 \bottomrule
 \caption{Polygonal Cannonball Numbers}
 \label{tab_ugly}

@@ -8,5 +8,5 @@ data: .PHONY
 writeup: data .PHONY
 	(cd writeup; latexmk -pv)
 
-writeup: list .PHONY
+list: data .PHONY
 	(cd biglist; latexmk -pv)

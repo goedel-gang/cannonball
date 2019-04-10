@@ -1,5 +1,7 @@
-// Finding cannonball numbers that are equal to a polygonal number of the same
-// base. See https://www.youtube.com/watch?v=q6L06pyt9CA
+// Finding cannonball numbers for polygons with s sides, where s = 2 mod 3.
+// Makes the technically unfounded assumption that for each s >= 8 there is such
+// a number and it follows the rough upward trend seen in the graph, but, I
+// mean, really, have you seen the graph??
 
 #include <stdio.h>
 #include <math.h>
@@ -10,9 +12,6 @@
 // There also also some other macros with the nth term of a cannonball number
 #define POLYGONAL(s, n) ((n * n * (s - 2) - n * (s - 4)) >> 1)
 #define CANNON(s, n) n * (n + 1) * ((s - 2) * (2 * n + 1) - 3 * (s - 4)) / 12
-// Symbolic constants for the default values of the parameters
-#define MAX_CHECK_DEFAULT ipow(10, 11)
-#define MAX_BASE_DEFAULT 31265
 // How many numbers to check before giving an update
 #define UPDATE_CYCLES ipow(10, 6) * 5
 
@@ -72,30 +71,18 @@ cannonball_int isqrt(cannonball_int n) {
     }
 }
 
-// Routine to check all cannonball numbers of side `base` up to `max` to see if
-// they are also a polyhedral number of side `base`.
-void check_base(cannonball_int base, cannonball_int max_check,
-                cannonball_int max_base) {
+// find the first polygonal number and break, going up from the previous stack
+// height.
+cannonball_int run_base(cannonball_int base, cannonball_int n_c) {
     char *c_1 = malloc(CANNON_INT_STR_LEN),
          *c_2 = malloc(CANNON_INT_STR_LEN),
          *c_3 = malloc(CANNON_INT_STR_LEN),
          *c_4 = malloc(CANNON_INT_STR_LEN);
-    cannonball_int i, cannonballs;
+    cannonball_int cannonballs;
     cannonball_int discriminant, discriminant_sqrt, numerator, denominator;
     denominator = 2 * base - 4;
-    for (  i = 2, cannonballs = 1 + POLYGONAL(base, 2);
-           cannonballs <= max_check;
-           i++, cannonballs += POLYGONAL(base, i)) {
-        if (i % UPDATE_CYCLES == 0 || (i == 2 && base % UPDATE_CYCLES == 0)) {
-            fmt_c(base, c_1);
-            fprintf(stderr, "\r%3.0f%% %3.0f%% %s",
-                    100.0 * base / max_base,
-                    // As cannonballs grows roughly cubically, take a cube root
-                    // to linearise the progress
-                    100.0 * pow(1.0 * cannonballs / max_check, 1.0 / 3),
-                    c_1);
-            fflush(stderr);
-        }
+    for (  cannonballs = CANNON(base, n_c);;
+           n_c++, cannonballs += POLYGONAL(base, n_c)) {
         discriminant = (base - 4) * (base - 4) + 8 * (base - 2) * cannonballs;
         discriminant_sqrt = isqrt(discriminant);
         if (discriminant_sqrt * discriminant_sqrt == discriminant) {
@@ -106,37 +93,24 @@ void check_base(cannonball_int base, cannonball_int max_check,
                 fmt_c(cannonballs, c_1);
                 fmt_c(base, c_2);
                 fmt_c(numerator / denominator, c_3);
-                fmt_c(i, c_4);
+                fmt_c(n_c, c_4);
                 fprintf(stderr, "\r");
                 printf(">%s == P(%s, %s) == C(%s, %s)\n",
                        c_1, c_2, c_3, c_2, c_4);
+                break;
             }
         }
     }
     free(c_1); free(c_2); free(c_3); free(c_4);
+    return n_c;
 }
 
-int main(int argc, char **argv) {
-    cannonball_int base,
-                   max_check = MAX_CHECK_DEFAULT,
-                   max_base = MAX_BASE_DEFAULT;
-    char *c_1 = malloc(CANNON_INT_STR_LEN),
-         *c_2 = malloc(CANNON_INT_STR_LEN);
-    if (argc >= 2) {
-        max_check = (cannonball_int)strtold(argv[1], NULL);
+int main(void) {
+    cannonball_int base, n_c;
+    printf("Finding cannonball numbers where s = 2 mod 3\n");
+    n_c = 2;
+    for (base = 8; ; base += 3) {
+        n_c = run_base(base, n_c);
     }
-    if (argc >= 3) {
-        max_base = (cannonball_int)strtold(argv[2], NULL);
-    }
-    fmt_c(max_check, c_1);
-    fmt_c(max_base, c_2);
-    printf("Finding polygonal cannonball numbers <= %s, with base <= %s\n",
-           c_1, c_2);
-    printf("Using integers of width %zu bytes, which go up to about %.5e\n",
-           sizeof(cannonball_int), exp(log(0xff) * sizeof(cannonball_int)));
-    for (base = 3; base <= max_base && base <= max_check; base++) {
-        check_base(base, max_check, max_base);
-    }
-    free(c_1); free(c_2);
     return 0;
 }

@@ -28,7 +28,7 @@ def check_line(line):
         raise ValueError("line {!r} incorrect".format(line))
     return s, C, n_P, n_C
 
-def check_files(files):
+def check_files(files, args):
     """
     Parse and check all the solutions in each file
     """
@@ -36,21 +36,27 @@ def check_files(files):
     for line in chain.from_iterable(files):
         if line.startswith(">"):
             solutions.add(check_line(line))
-    output_solutions(solutions)
+    output_solutions(solutions, args)
+
+def is_boring(sol):
+    """
+    The idea here is to not display the dull ones
+    """
+    s, C, n_P, n_C = sol
+    return (s > 100 and
+            s % 3 == 2 and
+            log10(C) > -3 + 7 * log10(s) and
+            log10(C) < -2.5 + 7.5 * log10(s))
 
 def solutions_key(sol):
     """
-    The idea here is to push all the boring solutions to the end
+    Key to push boring solutions to the end
     """
-    s, C, n_P, n_C = sol
-    if (s > 100 and
-        s % 3 == 2 and
-        log10(C) > -3 + 7 * log10(s) and
-        log10(C) < -2.5 + 7.5 * log10(s)):
+    if is_boring(sol):
         return (inf, *sol)
     return sol
 
-def output_solutions(solutions_):
+def output_solutions(solutions_, args):
     """
     Write solutions to a LaTeX table
     """
@@ -58,17 +64,33 @@ def output_solutions(solutions_):
     # write the output as LaTeX. We're not here to be pretty, so might as well
     # play a few rounds of code golf.
     for solution in solutions:
-        print((" {} ".join("&" * 5)[2:-1] + r"\\").format(*solution))
+        write_files = [args.write_all]
+        if is_boring(solution):
+            write_files.append(args.write_boring)
+        else:
+            write_files.append(args.write_interesting)
+        for wfile in write_files:
+            print((" {} ".join("&" * 5)[2:-1] + r"\\").format(*solution),
+                  file=wfile)
 
 def get_args():
     """
     Get arguments from command line
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--files", type=argparse.FileType("r"),
-                        nargs="*", help="list of files to read")
+    parser.add_argument("--files", type=argparse.FileType("r"), required=True,
+                        nargs="+", help="list of files to read")
+    parser.add_argument("--write-interesting", type=argparse.FileType("w"),
+                        required=True,
+                        help="File to write table of interesting data to")
+    parser.add_argument("--write-boring", type=argparse.FileType("w"),
+                        required=True,
+                        help="File to write boring data to")
+    parser.add_argument("--write-all", type=argparse.FileType("w"),
+                        required=True,
+                        help="File to write all data to")
     return parser.parse_args()
 
 if __name__ == "__main__":
     args = get_args()
-    check_files(args.files)
+    check_files(args.files, args)

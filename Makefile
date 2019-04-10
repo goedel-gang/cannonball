@@ -1,13 +1,12 @@
-default:
-	(cd graph; ./make_graphs.sh)
-	(cd writeup; latexmk -pv)
-	(cd full_list; latexmk -pv)
+.PHONY:
 
-full:
-	(cd full_list; latexmk -pv)
+default: writeup data list .PHONY
 
-data:
+data: .PHONY
 	(cd graph; ./make_graphs.sh)
 
-writeup:
+writeup: data .PHONY
 	(cd writeup; latexmk -pv)
+
+writeup: list .PHONY
+	(cd biglist; latexmk -pv)

@@ -121,9 +121,16 @@ assuming that this pattern continues, in that you can move 3 along and a little
 up to get to a new cannonball polygonal number, it is easy to generate these
 kinds of numbers at a preposterous rate. I wrote a little C program (listing
 \ref{lst_c_2mod3} which took maybe ten minutes to hit the upper bounds of
-128-bit integer arithmetic, so I for now I've written a Python program to bear
-the torch, and painstakingly squeeze out every last member of the congruence
-class at my leisure.
+128-bit integer arithmetic, getting me to around 80000.
+
+I then wrote a Python program (listing \ref{lst_py_2mod3}), which was at first
+just a straightforward translation, to take advantage of Python's arbitrary
+precision integers. I then decided I could probably take further advantage of
+the curve, because really going up in linear steps felt a bit slow. I assumed
+that the graph of \(s\) against \(n_C\) would be convex, such that each gap
+between numbers is greater than the last. By making this assumption, I suddenly
+started generating tens of thousands of solutions per second, getting to the
+point where IO is the main bottleneck.
 
 \begin{longlisting}
 \inputminted{c}{../src/c/cannonball.c}
@@ -143,10 +150,18 @@ class at my leisure.
 \label{lst_c_2mod3}
 \end{longlisting}
 
+\begin{longlisting}
+\inputminted{c}{../src/c/2mod3/2mod3.py}
+\caption{Python program like (\ref{lst_c_2mod3}) but cleverer.}
+\label{lst_py_2mod3}
+\end{longlisting}
+
 \section{The Ugly}
 
 I have plotted both the data in its entirety on a double logarithmic scale
-\ref{fig_log_all}.
+\ref{fig_log_all}. The graphs started becoming so large after I came up with the
+trick to generate 2-mod-3 numbers that I had to rasterise them. You can modify
+the R code to make them be PDFs if you want but it will be slow.
 
 The obvious pattern that jumps out is the big line of points for all the sides
 congruent to \(2 \pmod 3\). Particularly because it looks like such a straight
@@ -155,6 +170,9 @@ multiple of some power of \(s\). I drew two lines that seemed to roughly bound
 it, and used those to extract the points on the line and then do some linear
 regression on that (figure \ref{fig_log_boring}). I obtained the formula
 \input{../graph/model}
+This would seem to imply to me that it's probably a seventh-degree polynomial
+with some kind of error term, but I'm waaaaaay out of my depth here.
+
 I have also plotted these points on a linear scale, demonstrating their
 relationship \ref{fig_linear_boring}.
 
@@ -172,9 +190,18 @@ individualistic solutions.
 There are also two tables \texttt{boring.tsv} and \texttt{all.tsv} containing
 only the boring solutions and all solutions, respectively, but there are such a
 truly mind-boggling number of boring solutions that really it's hardly any fun
-looking at them. The table would literally be three order of magnitude larger if
-I hadn't. I'm not joking - I made a separate PDF with a full table in
-\texttt{../full\_list} and it's about 700 pages long.
+looking at them.
+
+Unfortunately at this point they're so big that I've had to arbitraryily curtail
+them to 10000 lines, presented in \texttt{all\_extract.tsv}. The full length of
+\texttt{all.tsv} is currently \input{../graph/all_linecount.tex}.
+
+The rate of generation of these solutions is several orders of
+magnitude above anything else, which does mean that you should be able to
+generate your own set of a couple hundred million fairly quickly.
+
+I have presented an extract of the full data set in the document
+\texttt{biglist.pdf}.
 
 \begin{longlisting}
 \inputminted{R}{../graph/graph.R}
@@ -184,28 +211,28 @@ I hadn't. I'm not joking - I made a separate PDF with a full table in
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth,page=1]{../graph/Rplots.pdf}
+\includegraphics[width=\textwidth]{../graph/all_log.png}
 \caption{Log plot}
 \label{fig_log_all}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth,page=2]{../graph/Rplots.pdf}
+\includegraphics[width=\textwidth]{../graph/boring_lin.png}
 \caption{Linear plot of boring points}
 \label{fig_linear_boring}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth,page=3]{../graph/Rplots.pdf}
+\includegraphics[width=\textwidth]{../graph/boring_log.png}
 \caption{Log plot of the boring points}
 \label{fig_log_boring}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth,page=4]{../graph/Rplots.pdf}
+\includegraphics[width=\textwidth]{../graph/interesting_log.png}
 \caption{Log plot of the remaining points}
 \label{fig_log_interesting}
 \end{figure}

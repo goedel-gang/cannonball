@@ -37,7 +37,7 @@ def get_longest_runs(files):
 def fmt_val(v):
     if "e" in v:
         base, exponent = v.split("e")
-        return r"\({}^{{{}}}\)".format(base, exponent)
+        return r"\({} \cdot 10^{{{}}}\)".format(base, exponent)
     return v
 
 def format_furthest(best, best_2m3, args):

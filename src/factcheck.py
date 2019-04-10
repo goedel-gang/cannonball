@@ -9,11 +9,15 @@ constant time compared to some of the other computation that's happening.
 """
 
 import argparse
+import sys
 
 from cannonball import polygonal
 from re import findall
 from itertools import chain
 from math import log10, inf
+
+# how often to write a progress report to STDOUT
+UPDATE_FREQ = 100000
 
 def cannonball(s, n):
     """
@@ -35,11 +39,19 @@ def check_files(files, args):
     """
     Parse and check all the solutions in each file
     """
-    solutions = set()
-    for line in chain.from_iterable(files):
+    interesting = set()
+    boring = set()
+    for i, line in enumerate(chain.from_iterable(files)):
+        if i % UPDATE_FREQ == 0:
+            print("\rchecking line {}".format(i), file=sys.stderr, end="",
+                  flush=True)
         if line.startswith(">"):
-            solutions.add(check_line(line))
-    output_solutions(solutions, args)
+            sol = check_line(line)
+            if is_boring(sol):
+                boring.add(sol)
+            else:
+                interesting.add(sol)
+    output_solutions(boring, interesting, args)
 
 def is_boring(sol):
     """
@@ -51,30 +63,36 @@ def is_boring(sol):
             log10(C) > -3 + 7 * log10(s) and
             log10(C) < -2.5 + 7.5 * log10(s))
 
-def solutions_key(sol):
+def tsv_solution(solution):
     """
-    Key to push boring solutions to the end
+    Format a solution as a TSV line
     """
-    if is_boring(sol):
-        return (inf, *sol)
-    return sol
+    return "\t".join(map(str, solution)) + "\n"
 
-def output_solutions(solutions_, args):
+def fmt_solution(sol):
+    """
+    write the output as LaTeX. We're not here to stand around and look pretty,
+    so might as well play a few rounds of code golf.
+    """
+    return (" {} ".join("&" * 5)[2:-1] + r"\\" + "\n").format(*sol)
+
+def output_solutions(boring, interesting, args):
     """
     Write solutions to a LaTeX table
     """
-    solutions = list(sorted(solutions_, key=solutions_key))
-    # write the output as LaTeX. We're not here to be pretty, so might as well
-    # play a few rounds of code golf.
-    for solution in solutions:
-        write_files = [args.write_all]
-        if is_boring(solution):
-            write_files.append(args.write_boring)
-        else:
-            write_files.append(args.write_interesting)
-        for wfile in write_files:
-            print((" {} ".join("&" * 5)[2:-1] + r"\\").format(*solution),
-                  file=wfile)
+    for solution in sorted(interesting):
+        tsv = tsv_solution(solution)
+        args.write_interesting.write(tsv)
+        args.write_all.write(tsv)
+        args.write_tex.write(fmt_solution(solution))
+    print("\rsorting...", file=sys.stderr, end="", flush=True)
+    for i, solution in enumerate(sorted(boring)):
+        if i % UPDATE_FREQ == 0:
+            print("\rwriting s={}".format(solution[1]), file=sys.stderr,
+                  flush=True, end="")
+        tsv = tsv_solution(solution)
+        args.write_boring.write(tsv)
+        args.write_all.write(tsv)
 
 def get_args():
     """
@@ -83,6 +101,9 @@ def get_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--files", type=argparse.FileType("r"), required=True,
                         nargs="+", help="list of files to read")
+    parser.add_argument("--write-tex", type=argparse.FileType("w"),
+                        required=True,
+                        help="File to write TeX table to")
     parser.add_argument("--write-interesting", type=argparse.FileType("w"),
                         required=True,
                         help="File to write table of interesting data to")

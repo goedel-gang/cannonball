@@ -42,9 +42,9 @@ def fmt_val(v):
 
 def format_furthest(best, best_2m3, args):
     for depth, furthest in sorted(best.items(), key=lambda x: float(x[0])):
-        print(r"{} & {} \\".format(fmt_val(depth), furthest),
-              file=args.best_file)
-    print("{}-gon".format(best_2m3), file=vars(args)["2mod3_file"])
+        args.best_file.write(r"{} & {} \\".format(fmt_val(depth), furthest) +
+                             "\n")
+    vars(args)["2mod3_file"].write("{}-gon".format(best_2m3))
 
 def get_args():
     parser = argparse.ArgumentParser(description=__doc__)

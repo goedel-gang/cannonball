@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 cd ../src;
-./compile.zsh;
+./compile.sh;
 cd ../graph;
 cat ../src/interesting.tex | sed -e "s/ *& */	/g" -e "s/\\\\//g" > interesting.tsv
 cat ../src/boring.tex | sed -e "s/ *& */	/g" -e "s/\\\\//g" > boring.tsv

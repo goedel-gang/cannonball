@@ -26,6 +26,28 @@ inexplicable reason (``````Pell's Equation''''''), if you take a convergent
 \(b / c\) of \(\sqrt 2\), then \(b^2 c^2\) will be a square triangular number.
 (Matt Parker voice) How cool is that?!
 
+\section{State of the Union}
+
+Below is presented a table of depths of \(s\) to which I've searched for various
+upper bounds on \(C\). I did this mostly with one monumental overnight
+computation on a fairly standard issue desktop computer (I can't bear to hear my
+laptop's fan). Unfortunately I forgot to store the upper bound for each
+computation, so they're just the largest number that's been found at that depth.
+A couple of these may be an underestimate by about an order of magnitude.
+
+\begin{longtable}{rr}
+\toprule
+\boldmath \(C(s, n) <\) & \boldmath \(s <\) \\
+\midrule
+\input{../src/depthtable}
+\endhead
+\bottomrule
+\end{longtable}
+
+I've also separately run some computation on numbers congruent to 2 module 3, as
+I'll discuss more later. With these, I've checked polygons up the the gargantuan
+\input{../src/2mod3count}.
+
 \section{The Maths}
 
 Indeed, this approach does seem to work. Almost by definition we have the
@@ -80,8 +102,13 @@ precision integer arithmetic functionality, but then I decided I wasn't going to
 run it on anything fast enough to have to worry about that, and I have better
 things to do.
 
-There's also a slick little progress update that gets printed to STDERR, and a
-number of zsh scripts to save me typing.
+There's also a slick little progress update that gets printed to STDERR. I've
+written a number of interacting zsh scripts and Python scripts here and there to
+manage the actual programs, forming a sort of terribly managed little pipeline,
+with files that don't make any sense all over the place. Much of it is probably
+also dependent on software that happens to be on my computer, like some Linux
+coreutils. Obviously the C code will probably require GCC to work out of the
+box.
 
 I also have a program that verifies results, removes duplicates and formats them
 into a \LaTeX{} table (spoilers for table \ref{tab_ugly}), shown in listing
@@ -137,18 +164,17 @@ Lastly, I plotted all points other than the points along this line in figure
 The R code I used to achieve all this is in Listing \ref{lst_R}.
 
 Table \ref{tab_ugly} lists some solutions that I've found, so far. The \TeX{}
-source of the table is in \texttt{../src/interesting.tex}, which is derived from
-\texttt{../src/c/solutions/*}.  I have deliberately omitted the ``boring''
+source of the table is in \texttt{../graph/interesting.tsv}, which is derived
+from \texttt{../src/c/solutions/*}.  I have deliberately omitted the ``boring''
 solutions along the dense line, favouring the more flavourful, stylish and
-individualistic solutions. This is pertinent as there are so many of these that
-the table would literally be three order of magnitude larger if I hadn't. I'm
-not joking - I made a separate PDF with a full table in \texttt{../full\_list}
-and it's about 600 pages long.
+individualistic solutions.
 
-There are also two tables \texttt{boring.tex} and \texttt{all.tex} containing
+There are also two tables \texttt{boring.tsv} and \texttt{all.tsv} containing
 only the boring solutions and all solutions, respectively, but there are such a
 truly mind-boggling number of boring solutions that really it's hardly any fun
-looking at them.
+looking at them. The table would literally be three order of magnitude larger if
+I hadn't. I'm not joking - I made a separate PDF with a full table in
+\texttt{../full\_list} and it's about 700 pages long.
 
 \begin{longlisting}
 \inputminted{R}{../graph/graph.R}

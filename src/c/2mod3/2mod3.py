@@ -12,9 +12,9 @@ stack which solves s. If you don't know what it should be, leave it blank.
 
 It's probably safer to pick a big-ish value for s.
 
-If you've got nothing, just do eg. python 2mod3.py -s 8.
+If you've got nothing, just do eg. python 2mod3.py -s 8 --write-solutions -
 An example of advanced usage would be:
-python 2mod3.py -s 4524710 -nc 6824327495086 -ncp 6824318445673
+python 2mod3.py -s 4524710 -nc 6824327495086 -ncp 6824318445673 --write-solutions -
 
 Unless you give it two values of s, so that it can calculate an initial
 difference, it calculates the first two slowly, and then starts optimising.  in

@@ -188,10 +188,25 @@ C = \frac{1}{162}s^7 - \frac{7}{81}s^6 + \frac{11}{27}s^5 - \frac{91}{162}s^4
 Any reason why this could be true is waaaaaay over my head, although maybe it
 has something to do with powers of 3.
 
+I used this expression to calculate a really big number just for the hell of it.
+I wrote a little code (as seen in listing \ref{lst_infinity}) to take some
+integer \(i_n\), calculate \(s_n = 3i_n + 2\) and \(C_n\) from there. Now I made
+repeatedly square \(i_n\) to advance - ie \(i_{n + 1} = i_n^2\) - just to
+quickly get very big numbers. In fact I found that almost all of the hard bit is
+calculating base-10 representations and typesetting them. \LaTeX{} very quickly
+crashes with the biggest numbers I found (see
+\texttt{../infinity\_and\_beyond/solutions/}), so I settled on a smaller one.
+
 \begin{longlisting}
 \inputminted{python}{../investigate/solve.py}
 \caption{Trying to find a polynomial}
 \label{lst_sympy}
+\end{longlisting}
+
+\begin{longlisting}
+\inputminted{python}{../infinity_and_beyond/buzz.py}
+\caption{Calculating big numbers because I can}
+\label{lst_infinity}
 \end{longlisting}
 
 I have also plotted these points on a linear scale, demonstrating their

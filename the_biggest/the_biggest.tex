@@ -1,0 +1,20 @@
+% fleqn aligns equations to the left, a4 paper size, 11pt font, article class
+\documentclass[fleqn,a4paper,11pt]{article}
+\title{About 0\% of the numbers}
+\author{Izaak van Dongen}
+
+\usepackage{mystyle}
+
+\begin{document}
+\maketitle\thispagestyle{empty} % no page number under title
+
+If we assume the van Dongen hypothesis, ie that
+\begin{equation*}
+C = \frac{1}{162}s^7 - \frac{7}{81}s^6 + \frac{11}{27}s^5 - \frac{91}{162}s^4
+    - \frac{133}{162}s^3 + \frac{103}{54}s^2 + \frac{35}{81}s - \frac{19}{81}
+\end{equation*}
+then where \(s = 9^{2^{14}}\), C will be:
+
+\input{tex/processed}
+
+\end{document}

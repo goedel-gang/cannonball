@@ -1,9 +1,11 @@
 #!/usr/bin/env zsh
 
+echo compiling
 cd ../src;
 ./compile.sh;
 cd ../graph;
-cat ../src/interesting.tex | sed -e "s/ *& */	/g" -e "s/\\\\//g" > interesting.tsv
-cat ../src/boring.tex | sed -e "s/ *& */	/g" -e "s/\\\\//g" > boring.tsv
-cat ../src/all.tex | sed -e "s/ *& */	/g" -e "s/\\\\//g" > all.tsv
+head -n 10000 > all_extract.tsv
+tail -n 10000 >> all_extract.tsv
+wc -l all.tsv > all_linecount.tex
+echo graphing
 Rscript graph.R > model.tex

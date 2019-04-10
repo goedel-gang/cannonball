@@ -196,6 +196,9 @@ quickly get very big numbers. In fact I found that almost all of the hard bit is
 calculating base-10 representations and typesetting them. \LaTeX{} very quickly
 crashes with the biggest numbers I found (see
 \texttt{../infinity\_and\_beyond/solutions/}), so I settled on a smaller one.
+I used a sequence of \(9\) just because I wanted to use \(10\)s, but they end up
+looking really artificial, because when you have a polynomial in a power of 10
+you get odd artifacts in base 10.
 
 \begin{longlisting}
 \inputminted{python}{../investigate/solve.py}

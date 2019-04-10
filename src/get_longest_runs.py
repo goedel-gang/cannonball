@@ -20,9 +20,9 @@ def get_longest_runs(files):
                 _, furthest, *_ = map(int, findall(r"\d+", solutions[-1]))
             else:
                 furthest = 0
-            if sol_file.name not in best:
+            if depth not in best:
                 best[depth] = furthest
-            elif best[depth][0] < furthest:
+            elif furthest > best[depth]:
                 best[depth] = furthest
         elif sol_file.name.count("_") == 2:
             solutions = [line for line in sol_file if line.startswith(">")]

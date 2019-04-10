@@ -23,7 +23,7 @@ While I'm here I'd also like to plug square triangular numbers:
 \url{https://en.wikipedia.org/wiki/Square_triangular_number}. I conjecture that
 these are one of the least talked about, but coolest things in maths. For some
 inexplicable reason (``````Pell's Equation''''''), if you take a convergent
-\(b / c\) of \(\sqrt 2\), then \(b^2 / c^2\) will be a square triangular number.
+\(b / c\) of \(\sqrt 2\), then \(b^2 c^2\) will be a square triangular number.
 (Matt Parker voice) How cool is that?!
 
 \section{The Maths}
@@ -70,6 +70,10 @@ parallel Python implementation). I used 128-bit integers to be on the safe side,
 as \(10^{19}\) is a little small for my liking. This meant I had to do a lot of
 messing around to get things to actually display in base 10. This program is
 shown in Listing \ref{lst_c}.
+
+Of course, an isolated source code listing is both not executable and not
+necessarily helpful, but fret not as my intact source tree is in
+\texttt{../src}.
 
 I did briefly consider either implementing or importing some kind of arbitrary
 precision integer arithmetic functionality, but then I decided I wasn't going to

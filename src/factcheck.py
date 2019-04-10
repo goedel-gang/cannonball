@@ -3,6 +3,9 @@
 """
 Program to verify polygonal cannonball numbers and then do a little
 post-processing.
+
+It's probably quite slow, but in the big O sense, this program is basically
+constant time compared to some of the other computation that's happening.
 """
 
 import argparse
